@@ -1,0 +1,24 @@
+export const MainJSON = {
+    topHeaderButton:[
+        {
+            ID:0,
+            label:'All'
+        },
+        {
+            ID:1,
+            label:'30506'
+        },
+        {
+            ID:2,
+            label:'30507'
+        },
+        {
+            ID:3,
+            label:'30508'
+        },
+        {
+            ID:4,
+            label:'30509'
+        },
+    ]
+}

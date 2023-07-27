@@ -1,11 +1,15 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StatusBar, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import { NavigationContainer } from '@react-navigation/native'
+import BottomTab from './src/Router/BottomTab'
+import { COLORS } from './src/Resources/Resources'
 
 export default function App() {
   return (
-    <View>
-      <Text>Ap</Text>
-    </View>
+  <NavigationContainer>
+    <StatusBar backgroundColor={COLORS.white} translucent barStyle={'dark-content'} />
+    <BottomTab />
+  </NavigationContainer>
   )
 }
 
