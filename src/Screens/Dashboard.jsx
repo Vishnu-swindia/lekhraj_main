@@ -1,30 +1,56 @@
-import {FlatList, SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  FlatList,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React from 'react';
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
 import Bookings from '../Components/Bookings';
+import CircularProgress from 'react-native-circular-progress-indicator';
+import DiscoverCards from '../Components/DiscoverCards';
 
 export default function Dashboard() {
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <View>
-        <FlatList
-          data={MainJSON.topHeaderButton}
-          horizontal
-          scrollEnabled
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={item => item.ID}
-          style={styles.headerButtonList}
-          renderItem={({item, index}) => {
-            return (
-              <View style={styles.headerButtonLabelView}>
-                <Text style={styles.headerButtonLabel}>{item.label}</Text>
-              </View>
-            );
-          }}
-        />
-      </View>
-      <Bookings />
+      <ScrollView>
+        {/* <View>
+          <CircularProgress
+            value={30}
+            radius={120}
+            progressValueColor={COLORS.primary}
+            activeStrokeColor={COLORS.primary}
+            inActiveStrokeColor={'#9b59b6'}
+            inActiveStrokeOpacity={0.3}
+            inActiveStrokeWidth={20}
+            activeStrokeWidth={30}
+            // rotation={180}
+            // circleBackgroundColor=
+          />
+        </View> */}
+        <View>
+          <FlatList
+            data={MainJSON.topHeaderButton}
+            horizontal
+            scrollEnabled
+            showsHorizontalScrollIndicator={false}
+            keyExtractor={item => item.ID}
+            style={styles.headerButtonList}
+            renderItem={({item, index}) => {
+              return (
+                <View style={styles.headerButtonLabelView}>
+                  <Text style={styles.headerButtonLabel}>{item.label}</Text>
+                </View>
+              );
+            }}
+          />
+        </View>
+        {/* <Bookings /> */}
+        <DiscoverCards />
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -32,7 +58,6 @@ export default function Dashboard() {
 const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
-    backgroundColor: COLORS.white,
     paddingHorizontal: 10,
   },
   headerButtonList: {
@@ -46,6 +71,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginHorizontal: 10,
+    backgroundColor:COLORS.white
   },
   headerButtonLabel: {
     color: COLORS.black,

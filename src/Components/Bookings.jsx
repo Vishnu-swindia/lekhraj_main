@@ -8,7 +8,7 @@ import {COLORS} from '../Resources/Resources';
 
 export default function Bookings() {
   return (
-    <View style={{}}>
+    <View style={{backgroundColor:COLORS.white, borderRadius:20}}>
       <View style={styles.header}>
         <Text style={styles.title}>Bookings</Text>
         <TouchableOpacity>
