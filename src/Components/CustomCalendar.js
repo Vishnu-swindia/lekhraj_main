@@ -54,13 +54,11 @@ export default function CustomCalendar(props) {
       );
     }
   };
+  const currentDate = new Date().toISOString().slice(0, 10)
+  console.log("curre-->", currentDate)
 
   //  marking date which are booked and avaliable in calendar
   const markedDates = {
-    [new Date().toISOString().slice(0, 10)]: {
-      selected: true,
-      selectedColor: 'blue',
-    },
     '2023-07-17': {marked: true},
     '2023-07-18': {marked: true},
     '2023-07-19': {marked: true},
@@ -97,17 +95,20 @@ export default function CustomCalendar(props) {
     datesInRange.forEach(date => {
       markedDates[date] = bookingObject;
     });
+    markedDates[currentDate] = {
+      selected: true,
+      selectedColor: COLORS.primaryDark,
+    }
   });
 
   return (
     <Calendar
       disableAllTouchEventsForDisabledDays={true}
       onMonthChange={month => {
+        props.onChangeMonth(month.month);
         const date = new Date(0, month.month, 1);
         const monthName = date.toLocaleString('default', {month: 'long'});
         setCurrentMonthName(monthName);
-        // setCurrentMonth(month.month)
-        props.onChangeMonth(month.month);
       }}
       initialDate={initialDate}
       renderArrow={renderArrow}

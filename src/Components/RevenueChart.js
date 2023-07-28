@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Pressable,
   FlatList,
+  ScrollView,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 // Resources
@@ -57,12 +58,15 @@ export default function RevenueChart(props) {
       MainJSON.netRevenue.filter(item => item.month === selectedMonth)[0],
     );
     if (
-      props.selectedMonth > totalMonth?.[selectedTabValue - 1]?.month ||
-      props.selectedMonth < totalMonth?.[0]?.month
+      (props.selectedMonth > totalMonth?.slice(-1)[0]?.month ||
+        props.selectedMonth < totalMonth?.[0]?.month) &&
+      selectedTabValue <= 6
     ) {
       setRefresh(!refresh);
-    }
+    } 
+  
   }, [props.selectedMonth]);
+  console.log('check', totalMonth, selectedMonth);
 
   // get the todays date
   const currentDate = new Date();
@@ -97,8 +101,8 @@ export default function RevenueChart(props) {
     const originalMax = Math.max(...revenueData);
 
     // Target range
-    const targetMin = 60;
-    const targetMax = 200;
+    const targetMin = 100;
+    const targetMax = 190;
 
     // Function to normalize a single value from the original range to the target range
     const normalizeValue = value =>
@@ -109,14 +113,15 @@ export default function RevenueChart(props) {
     data.forEach(item => {
       item.length = normalizeValue(item.revenue);
     });
+    console.log('data ------>', data);
     setTotalMonth(data);
   }, [selectedTabValue, refresh]);
 
   //  Render Chart Bars
   const RenderBars = monthData => {
     const data = monthData.data;
-    // condition to check if the selected month is greater than current month 
-    //or if we dont have that month data 
+    // condition to check if the selected month is greater than current month
+    //or if we dont have that month data
     return monthData.data.month <= currentMonth + 1 ? (
       <>
         <Pressable
@@ -131,7 +136,7 @@ export default function RevenueChart(props) {
                   selectedMonth === data.month
                     ? COLORS.primary
                     : COLORS.primaryLight,
-                width: selectedTabValue > 6 ? 20 : 50,
+                width: selectedTabValue > 6 ? 23 : 50,
                 height: data.length,
                 flex: null,
               }}
@@ -164,7 +169,7 @@ export default function RevenueChart(props) {
       //  showing Dashed bars
       <View>
         <View
-          style={{...styles.dashedBar, width: selectedTabValue > 6 ? 20 : 50}}
+          style={{...styles.dashedBar, width: selectedTabValue > 6 ? 23 : 50}}
         />
         <Text
           style={{
@@ -201,47 +206,63 @@ export default function RevenueChart(props) {
         </TouchableOpacity>
       </View>
       {/* ----------rendering chart ------- */}
-      <View style={styles.container}>
-        {totalMonth.map(item => (
-          <RenderBars data={item} key={item.ID} />
-        ))}
-      </View>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{alignSelf: 'center'}}>
+        <View
+          style={{
+            justifyContent: 'flex-end',
+            flexDirection: 'row',
+            alignItems: 'flex-end',
+          }}>
+          {totalMonth.map((item, index) => (
+            <View style={{marginHorizontal: 5}} key={index}>
+              <RenderBars data={item} key={item.ID} />
+            </View>
+          ))}
+        </View>
+      </ScrollView>
+
       {/* -----------sub header ------- */}
       <Text style={{...styles.title, alignSelf: 'center', marginVertical: 10}}>
         Net Revenue
       </Text>
 
       {/* --------- range filter component ------ */}
-      <FlatList
-        data={range}
-        horizontal
-        style={{alignSelf: 'center'}}
-        renderItem={({item, index}) => {
-          return (
-            <Pressable onPress={() => setSelectedTabValue(item.value)}>
-              <View
-                style={{
-                  ...styles.tabs,
-                  backgroundColor:
-                    selectedTabValue === item.value
-                      ? COLORS.white
-                      : COLORS.primaryLight,
-                }}>
-                <Text
+      <View style={{alignItems: 'flex-end'}}>
+        <FlatList
+          data={range}
+          horizontal
+          style={{alignSelf: 'flex-end'}}
+          renderItem={({item, index}) => {
+            return (
+              <Pressable onPress={() => setSelectedTabValue(item.value)}>
+                <View
                   style={{
-                    color:
+                    ...styles.tabs,
+                    backgroundColor:
                       selectedTabValue === item.value
-                        ? COLORS.primaryDark
-                        : COLORS.black,
-                    fontWeight: '600',
+                        ? COLORS.white
+                        : COLORS.primaryLight,
                   }}>
-                  {item.label}
-                </Text>
-              </View>
-            </Pressable>
-          );
-        }}
-      />
+                  <Text
+                    style={{
+                      color:
+                        selectedTabValue === item.value
+                          ? COLORS.primaryDark
+                          : COLORS.black,
+                      fontWeight: '600',
+                    }}>
+                    {item.label}
+                  </Text>
+                </View>
+              </Pressable>
+            );
+          }}
+        />
+      </View>
 
       {/* -----------------footer ----------------*/}
       <View style={styles.footer}>
@@ -281,9 +302,19 @@ export default function RevenueChart(props) {
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: COLORS.white,
-    width: '96%',
-    alignSelf: 'center',
     marginVertical: 15,
+    borderRadius: 20,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.16,
+    shadowRadius: 1.51,
+    elevation: 2,
+    width: '97%',
+    alignSelf: 'center',
+    height: 510,
   },
   header: {
     flexDirection: 'row',
@@ -359,10 +390,11 @@ const styles = StyleSheet.create({
   },
   tooltipContainer: {
     position: 'absolute',
+    minWidth: 50,
     backgroundColor: COLORS.white,
     padding: 8,
     borderRadius: 5,
-    zIndex: 1,
+    zIndex: 10,
     shadowColor: '#000000',
     shadowOffset: {
       width: 0,
@@ -372,7 +404,7 @@ const styles = StyleSheet.create({
     shadowRadius: 1.51,
     elevation: 2,
     left: -10,
-    top: -40,
+    top: -10,
   },
   pointer: {
     position: 'absolute',
@@ -386,7 +418,9 @@ const styles = StyleSheet.create({
     borderRightWidth: 10,
     borderRightColor: 'transparent',
     borderTopWidth: 10,
+
     borderTopColor: COLORS.white,
+    zIndex: 10,
   },
   tooltipText: {
     color: 'black',

@@ -39,22 +39,23 @@ export default function DiscoverCards(props) {
                 source={require('../assests/image1.jpg')}
               />
               <View>
+                <View style={{marginTop:20}}>
                 <Text style={styles.titleText}>Bohemian repsody</Text>
                 <View style={{flexDirection: 'row'}}>
                   <View style={styles.fromDate}>
-                    <Text style={{color: COLORS.black, fontWeight: '400'}}>
+                    <Text style={{color: COLORS.black, fontWeight: '600'}}>
                       {item.fromDate.split('-').reverse().join('/')}
                     </Text>
                   </View>
                   <View style={styles.fromDate}>
-                    <Text style={{color: COLORS.black, fontWeight: '400'}}>
+                    <Text style={{color: COLORS.black, fontWeight: '600'}}>
                       {item.toDate.split('-').reverse().join('/')}
                     </Text>
                   </View>
                 </View>
-                <Text style={{color: COLORS.black}}>{item.bookingDetails}</Text>
+                <Text style={{color: COLORS.black, fontSize:16}}>{item.bookingDetails}</Text>
                 <TouchableOpacity>
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                  <View style={{flexDirection: 'row', alignItems: 'center',marginVertical:10}}>
                     <Text style={styles.detailsBtn}>Details</Text>
                     <MIcon
                       name="arrow-forward"
@@ -65,6 +66,7 @@ export default function DiscoverCards(props) {
                   </View>
                 </TouchableOpacity>
               </View>
+                  </View>
             </View>
           );
         }}
@@ -100,10 +102,12 @@ const styles = StyleSheet.create({
   },
   fromDate: {
     padding: 8,
+    paddingHorizontal:12,
     backgroundColor: COLORS.primaryLight,
-    borderRadius: 10,
+    borderRadius: 7,
     marginRight: 6,
     marginVertical: 6,
+    
   },
   detailsBtn: {
     fontSize: 16,

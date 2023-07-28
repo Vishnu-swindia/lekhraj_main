@@ -16,13 +16,16 @@ const Tab = createBottomTabNavigator();
 export default function BottomTab() {
   return (
     <Tab.Navigator
+
       screenOptions={({route}) => ({
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: 'gray',
+       
         tabBarStyle: {
           paddingVertical: 7,
           borderTopLeftRadius: 20,
           borderTopRightRadius: 20,
+          backgroundColor:COLORS.white,
         },
       })}>
       {/* --------- Dashboard screen ---------- */}
