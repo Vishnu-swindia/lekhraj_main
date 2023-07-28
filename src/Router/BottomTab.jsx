@@ -6,14 +6,7 @@ import MIcon from 'react-native-vector-icons/MaterialIcons';
 import ADIcon from 'react-native-vector-icons/AntDesign';
 import {COLORS} from '../Resources/Resources';
 import Dashboard from '../Screens/Dashboard';
-
-function TempScreen() {
-  return (
-    <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Temp Screens!</Text>
-    </View>
-  );
-}
+import TempScreen from '../Screens/TempScreen';
 
 const Tab = createBottomTabNavigator();
 export default function BottomTab() {
@@ -28,11 +21,12 @@ export default function BottomTab() {
         component={Dashboard}
         options={{
           headerTitle: 'Dashboard',
-          headerTitleStyle:{color:COLORS.black,fontWeight:"700"},
+          headerTitleStyle: {color: COLORS.black, fontWeight: '700'},
           headerShown: true,
           headerTitleAlign: 'center',
           tabBarShowLabel: false,
-
+          headerStyle: {backgroundColor: null},
+          headerShadowVisible: false,
           tabBarIcon: ({color, size}) => (
             <MIcon
               name="dashboard"

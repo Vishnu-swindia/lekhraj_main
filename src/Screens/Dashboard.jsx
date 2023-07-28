@@ -5,12 +5,12 @@ import {
   StyleSheet,
   Text,
   View,
+  Image
 } from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
 import Bookings from '../Components/Bookings';
-import CircularProgress from 'react-native-circular-progress-indicator';
 import DiscoverCards from '../Components/DiscoverCards';
 import RevenueChart from '../Components/RevenueChart';
 
@@ -41,20 +41,7 @@ export default function Dashboard() {
 
    <RevenueChart selectedMonth={selectedMonth} onChangeMonth={setSelectedMonth}/>
 
-        {/* <View>
-          <CircularProgress
-            value={30}
-            radius={120}
-            progressValueColor={COLORS.primary}
-            activeStrokeColor={COLORS.primary}
-            inActiveStrokeColor={'#9b59b6'}
-            inActiveStrokeOpacity={0.3}
-            inActiveStrokeWidth={20}
-            activeStrokeWidth={30}
-            // rotation={180}
-            // circleBackgroundColor=
-          />
-        </View> */}
+       
 
         {/* --------------bookings section ------------ */}
         <Bookings
@@ -64,6 +51,17 @@ export default function Dashboard() {
 
         {/* --------Discover Cards Section ------- */}
         <DiscoverCards selectedMonth={selectedMonth} />
+
+        
+        <View style={{flexDirection:'row' , alignItems:"center", justifyContent:"space-between", backgroundColor:COLORS.white, margin:10,borderRadius:10, paddingHorizontal:10}}>
+          <Text>Contact Us</Text>
+          <View style={{flexDirection: 'row', alignItems:"center"}}>
+            <Image source={require('../assests/call.png')}  style={{width:30,marginHorizontal:7, resizeMode:"contain"}}/>
+            <Image source={require('../assests/email.png')}  style={{width:30, resizeMode:"contain", marginHorizontal:7,}}/>
+            <Image source={require('../assests/whatsapp.png')}  style={{width:30, resizeMode:"contain",marginHorizontal:7,}}/>
+          </View>
+        </View>
+
       </ScrollView>
     </SafeAreaView>
   );

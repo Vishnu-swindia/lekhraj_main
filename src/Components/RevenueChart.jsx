@@ -10,36 +10,15 @@ import React, {useEffect, useState} from 'react';
 import {COLORS} from '../Resources/Resources';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {MainJSON} from '../Resources/MainJSON';
-import {Tooltip, lightColors} from '@rneui/themed';
 import CircularProgress from 'react-native-circular-progress-indicator';
-import {Popable} from 'react-native-popable';
-import CustomTooltip from './CustomTooltip';
 
-const ControlledTooltip = props => {
-  const [open, setOpen] = React.useState(false);
-  return (
-    <Tooltip
-      visible={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      {...props}
-    />
-  );
-};
 
 export default function RevenueChart(props) {
   const selectedMonth = props.selectedMonth;
-  console.log('selected month---->', selectedMonth);
-  const barMaxHeight = 200;
-  const barMaxWidth = 50;
   const [monthlyData, setMonthlyData] = useState();
-  const [showPopover, setShowPopover] = useState(false);
   const [selectedTabValue, setSelectedTabValue] = useState(3);
   const [totalMonth, setTotalMonth] = useState([]);
+  const [refresh, setRefresh] = useState(false);
 
   const range = [
     {
@@ -68,6 +47,12 @@ export default function RevenueChart(props) {
     setMonthlyData(
       MainJSON.netRevenue.filter(item => item.month === selectedMonth)[0],
     );
+    if (
+      props.selectedMonth > totalMonth?.[selectedTabValue - 1]?.month ||
+      props.selectedMonth < totalMonth?.[0]?.month
+    ) {
+      setRefresh(!refresh);
+    }
   }, [props.selectedMonth]);
 
   const currentDate = new Date();
@@ -78,7 +63,7 @@ export default function RevenueChart(props) {
     // Calculate the last three months
     const lastMonths = [];
     for (let i = selectedTabValue - 1; i >= 0; i--) {
-      const month = (currentMonth - i + 12) % 12; // Handle wrapping around the year
+      const month = (selectedMonth - i + 12) % 12; // Handle wrapping around the year
       lastMonths.push(month + 1); // Add 1 to get the month number (1 to 12)
     }
     var data = [];
@@ -110,63 +95,83 @@ export default function RevenueChart(props) {
       item.length = normalizeValue(item.revenue);
     });
     setTotalMonth(data);
-  }, [selectedTabValue]);
+  }, [selectedTabValue, refresh]);
 
-  console.log('selected tab value -->', selectedTabValue);
-
-  //   console.log('total months -->',  monthlyData.occupancy);
 
   const RenderBars = monthData => {
     const data = monthData.data;
-    console.log('data----->', data);
     return (
-      <ControlledTooltip
-        popover={<Text>{data?.revenue}k</Text>}
-        width={70}
-        pointerColor={COLORS.lightGray}
-        withPointer={true}
-        backgroundColor={COLORS.white}
-        withOverlay={false}
-        containerStyle={styles.popover}
-        visible={showPopover}
-        onOpen={() => {
-          setTimeout(() => {
-            setShowPopover(false);
-          }, 3000);
-        }}>
-        <Pressable
-          onPress={() => {
-            setShowPopover(true);
-
-            props.onChangeMonth(data.month);
-          }}>
-          <View>
-            {/* <CustomTooltip/> */}
-            <View
-              style={{
-                ...styles.barStyle,
-                backgroundColor:
-                  selectedMonth === data.month
-                    ? COLORS.primary
-                    : COLORS.primaryLight,
-                width: selectedTabValue > 6 ? 20 : 50,
-                height: data.length,
-                flex: null,
-              }}
-            />
+      monthData.data.month <= currentMonth+1 ? (
+        <>
+          <Pressable
+            onPress={() => {
+              props.onChangeMonth(data.month);
+            }}>
+            <View style={styles.container}>
+              <View
+                style={{
+                  ...styles.barStyle,
+                  backgroundColor:
+                    selectedMonth === data.month
+                      ? COLORS.primary
+                      : COLORS.primaryLight,
+                  width: selectedTabValue > 6 ? 20 : 50,
+                  height: data.length,
+                  flex: null,
+                }}
+              />
+            </View>
             <Text
               style={{
                 alignSelf: 'center',
                 marginTop: 5,
-                color: COLORS.lightGrayText,
+                color:
+                  selectedMonth === data.month
+                    ? COLORS.primary
+                    : COLORS.lightGrayText,
               }}>
-              {new Date(0, data.month - 1, 1)
+              {new Date(0, data.month, 1)
                 .toLocaleString('default', {month: 'long'})
                 .slice(0, 3)}
             </Text>
-          </View>
-        </Pressable>
-      </ControlledTooltip>
+            {selectedMonth === data.month && (
+              <View style={styles.tooltipContainer}>
+                <View style={styles.pointer} />
+                <Text style={styles.tooltipText}>{data.revenue}K</Text>
+              </View>
+            )}
+          </Pressable>
+        </>
+      ) : (
+        <View>
+          <View
+            style={{
+              borderWidth: 1,
+              borderRadius: 15,
+              borderStyle: 'dashed',
+              borderColor: COLORS.primary,
+              width: selectedTabValue > 6 ? 20 : 50,
+              height: 100,
+              flex: null,
+            }}
+          />
+          <Text
+            style={{
+              alignSelf: 'center',
+              marginTop: 5,
+              color:
+                selectedMonth === data.month
+                  ? COLORS.primary
+                  : COLORS.lightGrayText,
+            }}>
+            {new Date(0, data.month, 1)
+              .toLocaleString('default', {month: 'long'})
+              .slice(0, 3)}
+          </Text>
+        </View>
+      )
+
+      // </ControlledTooltip>
     );
   };
 
@@ -211,6 +216,7 @@ export default function RevenueChart(props) {
                     selectedTabValue === item.value
                       ? COLORS.white
                       : COLORS.primaryLight,
+                      
                 }}>
                 <Text
                   style={{
@@ -316,7 +322,8 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.16,
     shadowRadius: 1.51,
-    elevation: 2,
+    elevation: 4,
+    marginBottom:5
   },
 
   container: {
@@ -330,5 +337,46 @@ const styles = StyleSheet.create({
     margin: 15,
     alignItems: 'flex-end',
     justifyContent: 'space-between',
+  },
+  toolTipMaincontainer: {
+    // flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  tooltipContainer: {
+    position: 'absolute',
+    backgroundColor: COLORS.white,
+    padding: 8,
+    borderRadius: 5,
+    zIndex: 1,
+    shadowColor: '#000000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.16,
+    shadowRadius: 1.51,
+    elevation: 2,
+    left: -10,
+    top: -40,
+  },
+  pointer: {
+    position: 'absolute',
+    left: '50%',
+    bottom: -10,
+    marginLeft: -10,
+    width: 0,
+    height: 0,
+    borderLeftWidth: 10,
+    borderLeftColor: 'transparent',
+    borderRightWidth: 10,
+    borderRightColor: 'transparent',
+    borderTopWidth: 10,
+    borderTopColor: COLORS.white,
+  },
+  tooltipText: {
+    color: 'black',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
