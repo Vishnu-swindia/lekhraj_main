@@ -1,3 +1,4 @@
+// React
 import {
   FlatList,
   SafeAreaView,
@@ -5,21 +6,22 @@ import {
   StyleSheet,
   Text,
   View,
-  Image
+  Image,
 } from 'react-native';
 import React, {useState} from 'react';
+// Resources
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
+// Components
 import Bookings from '../Components/Bookings';
 import DiscoverCards from '../Components/DiscoverCards';
 import RevenueChart from '../Components/RevenueChart';
 
 export default function Dashboard() {
   const [selectedMonth, setSelectedMonth] = useState(7);
-
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         {/* -------------- header Tabs ---------------- */}
         <View>
           <FlatList
@@ -39,9 +41,11 @@ export default function Dashboard() {
           />
         </View>
 
-   <RevenueChart selectedMonth={selectedMonth} onChangeMonth={setSelectedMonth}/>
-
-       
+        {/* -------------- revenue Chart ---------- */}
+        <RevenueChart
+          selectedMonth={selectedMonth}
+          onChangeMonth={setSelectedMonth}
+        />
 
         {/* --------------bookings section ------------ */}
         <Bookings
@@ -52,16 +56,24 @@ export default function Dashboard() {
         {/* --------Discover Cards Section ------- */}
         <DiscoverCards selectedMonth={selectedMonth} />
 
-        
-        <View style={{flexDirection:'row' , alignItems:"center", justifyContent:"space-between", backgroundColor:COLORS.white, margin:10,borderRadius:10, paddingHorizontal:10}}>
-          <Text>Contact Us</Text>
-          <View style={{flexDirection: 'row', alignItems:"center"}}>
-            <Image source={require('../assests/call.png')}  style={{width:30,marginHorizontal:7, resizeMode:"contain"}}/>
-            <Image source={require('../assests/email.png')}  style={{width:30, resizeMode:"contain", marginHorizontal:7,}}/>
-            <Image source={require('../assests/whatsapp.png')}  style={{width:30, resizeMode:"contain",marginHorizontal:7,}}/>
+        {/* ---------------Footer Section ------------ */}
+        <View style={styles.footer}>
+          <Text style={styles.headerButtonLabel}>Contact Us</Text>
+          <View style={{flexDirection: 'row', alignItems: 'center'}}>
+            <Image
+              source={require('../assests/call.png')}
+              style={{width: 30, marginHorizontal: 7, resizeMode: 'contain'}}
+            />
+            <Image
+              source={require('../assests/email.png')}
+              style={{width: 30, resizeMode: 'contain', marginHorizontal: 7}}
+            />
+            <Image
+              source={require('../assests/whatsapp.png')}
+              style={{width: 30, resizeMode: 'contain', marginHorizontal: 7}}
+            />
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -73,7 +85,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   headerButtonList: {
-    marginTop:15,
+    marginTop: 15,
   },
   headerButtonLabelView: {
     flex: 0,
@@ -89,5 +101,14 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     fontWeight: '600',
     fontSize: 18,
+  },
+  footer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.white,
+    margin: 10,
+    borderRadius: 10,
+    paddingHorizontal: 10,
   },
 });

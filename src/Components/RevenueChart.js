@@ -1,3 +1,4 @@
+// React
 import {
   StyleSheet,
   Text,
@@ -7,19 +8,26 @@ import {
   FlatList,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
+// Resources
 import {COLORS} from '../Resources/Resources';
-import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {MainJSON} from '../Resources/MainJSON';
+// Icons
+import MIcon from 'react-native-vector-icons/MaterialIcons';
+// Components
 import CircularProgress from 'react-native-circular-progress-indicator';
-
 
 export default function RevenueChart(props) {
   const selectedMonth = props.selectedMonth;
+  //  data for the particularly selected month
   const [monthlyData, setMonthlyData] = useState();
+  // tab values to filter months
   const [selectedTabValue, setSelectedTabValue] = useState(3);
+  //  total month data after filtering it via selected tabs
   const [totalMonth, setTotalMonth] = useState([]);
+  //  to refresh components
   const [refresh, setRefresh] = useState(false);
 
+  //  Range data for month to filter according to selected tab
   const range = [
     {
       value: 3,
@@ -43,6 +51,7 @@ export default function RevenueChart(props) {
     },
   ];
 
+  // Fetching data for currently selected month or if selected month changes
   useEffect(() => {
     setMonthlyData(
       MainJSON.netRevenue.filter(item => item.month === selectedMonth)[0],
@@ -55,10 +64,13 @@ export default function RevenueChart(props) {
     }
   }, [props.selectedMonth]);
 
+  // get the todays date
   const currentDate = new Date();
   // Get the current month (0 to 11, where 0 is January and 11 is December)
   const currentMonth = currentDate.getMonth();
 
+  //  fetching data after selecting or changing the tabs and selected month  and
+  //  adding normalizing length between 60 to 200 accoring to revenue for the bars
   useEffect(() => {
     // Calculate the last three months
     const lastMonths = [];
@@ -66,6 +78,8 @@ export default function RevenueChart(props) {
       const month = (selectedMonth - i + 12) % 12; // Handle wrapping around the year
       lastMonths.push(month + 1); // Add 1 to get the month number (1 to 12)
     }
+
+    // getting months for which we have to show bars and getting data accoring to months
     var data = [];
     var revenueData = [];
     lastMonths.forEach(m => {
@@ -77,6 +91,7 @@ export default function RevenueChart(props) {
       });
     });
 
+    // normilizing lenth for bars accoring to revenue
     // Original range
     const originalMin = Math.min(...revenueData);
     const originalMax = Math.max(...revenueData);
@@ -97,64 +112,31 @@ export default function RevenueChart(props) {
     setTotalMonth(data);
   }, [selectedTabValue, refresh]);
 
-
+  //  Render Chart Bars
   const RenderBars = monthData => {
     const data = monthData.data;
-    return (
-      monthData.data.month <= currentMonth+1 ? (
-        <>
-          <Pressable
-            onPress={() => {
-              props.onChangeMonth(data.month);
-            }}>
-            <View style={styles.container}>
-              <View
-                style={{
-                  ...styles.barStyle,
-                  backgroundColor:
-                    selectedMonth === data.month
-                      ? COLORS.primary
-                      : COLORS.primaryLight,
-                  width: selectedTabValue > 6 ? 20 : 50,
-                  height: data.length,
-                  flex: null,
-                }}
-              />
-            </View>
-            <Text
+    // condition to check if the selected month is greater than current month 
+    //or if we dont have that month data 
+    return monthData.data.month <= currentMonth + 1 ? (
+      <>
+        <Pressable
+          onPress={() => {
+            props.onChangeMonth(data.month);
+          }}>
+          <View style={styles.container}>
+            <View
               style={{
-                alignSelf: 'center',
-                marginTop: 5,
-                color:
+                ...styles.barStyle,
+                backgroundColor:
                   selectedMonth === data.month
                     ? COLORS.primary
-                    : COLORS.lightGrayText,
-              }}>
-              {new Date(0, data.month, 1)
-                .toLocaleString('default', {month: 'long'})
-                .slice(0, 3)}
-            </Text>
-            {selectedMonth === data.month && (
-              <View style={styles.tooltipContainer}>
-                <View style={styles.pointer} />
-                <Text style={styles.tooltipText}>{data.revenue}K</Text>
-              </View>
-            )}
-          </Pressable>
-        </>
-      ) : (
-        <View>
-          <View
-            style={{
-              borderWidth: 1,
-              borderRadius: 15,
-              borderStyle: 'dashed',
-              borderColor: COLORS.primary,
-              width: selectedTabValue > 6 ? 20 : 50,
-              height: 100,
-              flex: null,
-            }}
-          />
+                    : COLORS.primaryLight,
+                width: selectedTabValue > 6 ? 20 : 50,
+                height: data.length,
+                flex: null,
+              }}
+            />
+          </View>
           <Text
             style={{
               alignSelf: 'center',
@@ -168,15 +150,42 @@ export default function RevenueChart(props) {
               .toLocaleString('default', {month: 'long'})
               .slice(0, 3)}
           </Text>
-        </View>
-      )
 
-      // </ControlledTooltip>
+          {/*------- showing toolTip for selected month -------- */}
+          {selectedMonth === data.month && (
+            <View style={styles.tooltipContainer}>
+              <View style={styles.pointer} />
+              <Text style={styles.tooltipText}>{data.revenue}K</Text>
+            </View>
+          )}
+        </Pressable>
+      </>
+    ) : (
+      //  showing Dashed bars
+      <View>
+        <View
+          style={{...styles.dashedBar, width: selectedTabValue > 6 ? 20 : 50}}
+        />
+        <Text
+          style={{
+            alignSelf: 'center',
+            marginTop: 5,
+            color:
+              selectedMonth === data.month
+                ? COLORS.primary
+                : COLORS.lightGrayText,
+          }}>
+          {new Date(0, data.month, 1)
+            .toLocaleString('default', {month: 'long'})
+            .slice(0, 3)}
+        </Text>
+      </View>
     );
   };
 
   return (
     <View style={styles.mainContainer}>
+      {/* ---------- header ------- */}
       <View style={styles.header}>
         <Text style={styles.title}>Stats</Text>
         <TouchableOpacity>
@@ -191,17 +200,18 @@ export default function RevenueChart(props) {
           </View>
         </TouchableOpacity>
       </View>
-
+      {/* ----------rendering chart ------- */}
       <View style={styles.container}>
         {totalMonth.map(item => (
           <RenderBars data={item} key={item.ID} />
         ))}
       </View>
-
+      {/* -----------sub header ------- */}
       <Text style={{...styles.title, alignSelf: 'center', marginVertical: 10}}>
         Net Revenue
       </Text>
 
+      {/* --------- range filter component ------ */}
       <FlatList
         data={range}
         horizontal
@@ -216,7 +226,6 @@ export default function RevenueChart(props) {
                     selectedTabValue === item.value
                       ? COLORS.white
                       : COLORS.primaryLight,
-                      
                 }}>
                 <Text
                   style={{
@@ -234,19 +243,27 @@ export default function RevenueChart(props) {
         }}
       />
 
+      {/* -----------------footer ----------------*/}
       <View style={styles.footer}>
-        <CircularProgress
-          value={monthlyData?.occupancy || 0}
-          radius={50}
-          progressValueColor={COLORS.primary}
-          activeStrokeColor={COLORS.primary}
-          inActiveStrokeColor={COLORS.primaryLight}
-          inActiveStrokeOpacity={0.6}
-          inActiveStrokeWidth={13}
-          activeStrokeWidth={20}
-          valueSuffix="%"
-          rotation={130}
-        />
+        {/* ----- circular progress component --- */}
+        <View style={{alignItems: 'center'}}>
+          <CircularProgress
+            value={monthlyData?.occupancy || 0}
+            radius={45}
+            progressValueColor={COLORS.primary}
+            activeStrokeColor={COLORS.primary}
+            inActiveStrokeColor={COLORS.primaryLight}
+            inActiveStrokeOpacity={0.6}
+            inActiveStrokeWidth={15}
+            activeStrokeWidth={20}
+            valueSuffix="%"
+            rotation={130}
+          />
+          <Text style={{color: COLORS.black, fontSize: 20, fontWeight: '500'}}>
+            Occupancy
+          </Text>
+        </View>
+        {/* -----------avg room rate-------------- */}
         <View style={{alignItems: 'center'}}>
           <Text
             style={{color: COLORS.primary, fontSize: 25, fontWeight: '900'}}>
@@ -257,9 +274,6 @@ export default function RevenueChart(props) {
           </Text>
         </View>
       </View>
-
-      <View
-        style={{paddingHorizontal: 10, backgroundColor: COLORS.white}}></View>
     </View>
   );
 }
@@ -323,7 +337,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.16,
     shadowRadius: 1.51,
     elevation: 4,
-    marginBottom:5
+    marginBottom: 5,
   },
 
   container: {
@@ -378,5 +392,13 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     fontWeight: '600',
+  },
+  dashedBar: {
+    borderWidth: 1,
+    borderRadius: 15,
+    borderStyle: 'dashed',
+    borderColor: COLORS.primary,
+    height: 100,
+    flex: null,
   },
 });

@@ -1,3 +1,4 @@
+// React
 import {
   StyleSheet,
   Text,
@@ -7,15 +8,19 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React from 'react';
+//  Resources
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
+// Icons
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 
 export default function DiscoverCards(props) {
   const selectedMonth = props.selectedMonth;
+  // function to get data from selected month
   function getBookingDataForMonth(selectedMonth) {
     return MainJSON.Bookings.bookings[selectedMonth];
   }
+  // selected month data 
   const data = getBookingDataForMonth(selectedMonth);
 
   return (

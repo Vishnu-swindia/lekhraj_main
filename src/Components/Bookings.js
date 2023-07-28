@@ -1,17 +1,19 @@
+// React
 import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import {Calendar} from 'react-native-calendars';
+// calendar component 
 import CustomCalendar from './CustomCalendar';
+// Icons
 import MIcon from 'react-native-vector-icons/MaterialIcons';
 import EnIcon from 'react-native-vector-icons/Entypo';
+// Resources
 import {COLORS} from '../Resources/Resources';
 
 export default function Bookings(props) {
   const selectedMonth = props.selectedMonth;
-
-  
   return (
     <View style={styles.mainContainer}>
+      {/* -------- header --------- */}
       <View style={styles.header}>
         <Text style={styles.title}>Bookings</Text>
         <TouchableOpacity>
@@ -21,11 +23,13 @@ export default function Bookings(props) {
           </View>
         </TouchableOpacity>
       </View>
+      {/* ---------calendar section-------- */}
       <CustomCalendar
       selectedMonth={selectedMonth}
       onChangeMonth = {(month)=>props.onChangeMonth(month)}
         onDayPress={day => console.log(`Date pressed: ${day.dateString}`)}
       />
+      {/* ---------- legends ---------- */}
       <View style={{flexDirection: 'row'}}>
         <View style={{flexDirection: 'row', alignItems: 'center'}}>
           <EnIcon name="dot-single" color="red" size={30} />

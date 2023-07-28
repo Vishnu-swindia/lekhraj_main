@@ -1,16 +1,22 @@
+// React
 import React, {useEffect, useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, View, Text} from 'react-native';
+import {Text} from 'react-native';
+// Calendar from react-native-calendar
 import {Calendar} from 'react-native-calendars';
+// Icons
 import MIcon from 'react-native-vector-icons/MaterialIcons';
+// Resources
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
 
 export default function CustomCalendar(props) {
-  
   const selectedMonth = props.selectedMonth;
+  // selected month name for custom calendar header
   const [currentMonthName, setCurrentMonthName] = useState();
+  // initail date to show when month is selected
   const [initialDate, setInitialDate] = useState();
 
+  // getting month name and initial date from selected month number
   useEffect(() => {
     if (selectedMonth !== undefined) {
       const date = new Date(2023, selectedMonth - 1, 2);
@@ -26,6 +32,7 @@ export default function CustomCalendar(props) {
     }
   }, [selectedMonth]);
 
+  // Adding custom arrow to switch month
   const renderArrow = direction => {
     if (direction === 'left') {
       return (
@@ -48,6 +55,7 @@ export default function CustomCalendar(props) {
     }
   };
 
+  //  marking date which are booked and avaliable in calendar
   const markedDates = {
     [new Date().toISOString().slice(0, 10)]: {
       selected: true,
@@ -57,6 +65,7 @@ export default function CustomCalendar(props) {
     '2023-07-18': {marked: true},
     '2023-07-19': {marked: true},
   };
+
   // Function to get all dates between 'fromDate' and 'toDate' (inclusive)
   function getDatesBetween(fromDate, toDate) {
     const dates = [];
@@ -67,10 +76,9 @@ export default function CustomCalendar(props) {
       dates.push(new Date(current).toISOString().slice(0, 10));
       current.setDate(current.getDate() + 1);
     }
-
     return dates;
   }
-  // Loop through the 'data' array
+  // Loop through the 'bookings' array
   MainJSON.Bookings.bookings[selectedMonth].forEach(booking => {
     const {fromDate, toDate, bookingDetails} = booking;
 
@@ -103,19 +111,12 @@ export default function CustomCalendar(props) {
       }}
       initialDate={initialDate}
       renderArrow={renderArrow}
-      customHeaderTitle={<Text>{currentMonthName}</Text>}
+      customHeaderTitle={
+        <Text style={{color: COLORS.black, fontSize: 17}}>
+          {currentMonthName}
+        </Text>
+      }
       markedDates={markedDates}
-      minDate={'2023-01-01'}
-      maxDate={'2023-12-31'}
     />
   );
 }
-
-const styles = StyleSheet.create({
-  headerMonthTitle: {
-    marginHorizontal: 20,
-    color: COLORS.black,
-    fontSize: 20,
-    fontWeight: '500',
-  },
-});

@@ -1,10 +1,14 @@
+// React
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
+// bottom tab navigator
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+// Icons
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MIcon from 'react-native-vector-icons/MaterialIcons';
-import ADIcon from 'react-native-vector-icons/AntDesign';
+// Resources
 import {COLORS} from '../Resources/Resources';
+// Screens
 import Dashboard from '../Screens/Dashboard';
 import TempScreen from '../Screens/TempScreen';
 
@@ -15,9 +19,15 @@ export default function BottomTab() {
       screenOptions={({route}) => ({
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: 'gray',
+        tabBarStyle: {
+          paddingVertical: 7,
+          borderTopLeftRadius: 20,
+          borderTopRightRadius: 20,
+        },
       })}>
+      {/* --------- Dashboard screen ---------- */}
       <Tab.Screen
-        name="Home"
+        name="Dashboard"
         component={Dashboard}
         options={{
           headerTitle: 'Dashboard',
@@ -37,6 +47,7 @@ export default function BottomTab() {
           ),
         }}
       />
+      {/* --------- Temp screen --------------- */}
       <Tab.Screen
         name="Settings"
         component={TempScreen}
@@ -53,6 +64,8 @@ export default function BottomTab() {
           ),
         }}
       />
+      {/* --------- Temp screen --------------- */}
+
       <Tab.Screen
         name="Bookings"
         component={TempScreen}
@@ -69,6 +82,7 @@ export default function BottomTab() {
           ),
         }}
       />
+      {/* --------- Temp screen --------------- */}
       <Tab.Screen
         name="Profile"
         component={TempScreen}
