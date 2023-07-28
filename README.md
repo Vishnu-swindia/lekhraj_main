@@ -1,5 +1,4 @@
- the link for tha app --(https://drive.google.com/file/d/144CrtKaj0oPjutY48_QWnW1agdFcZMfj/view?usp=drivesdk)
-
+ the link for tha app --(https://drive.google.com/file/d/14PAjL0ceNI0OypbDvboEVqn2lDnsq_aT/view?usp=drivesdk)
 # Getting Started
 
 >**Note**: Make sure you have completed the [React Native - Environment Setup](https://reactnative.dev/docs/environment-setup) instructions till "Creating a new application" step, before proceeding.
