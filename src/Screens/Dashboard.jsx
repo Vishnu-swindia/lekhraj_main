@@ -6,31 +6,21 @@ import {
   Text,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import {COLORS} from '../Resources/Resources';
 import {MainJSON} from '../Resources/MainJSON';
 import Bookings from '../Components/Bookings';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import DiscoverCards from '../Components/DiscoverCards';
+import RevenueChart from '../Components/RevenueChart';
 
 export default function Dashboard() {
+  const [selectedMonth, setSelectedMonth] = useState(7);
+
   return (
     <SafeAreaView style={styles.mainContainer}>
       <ScrollView>
-        {/* <View>
-          <CircularProgress
-            value={30}
-            radius={120}
-            progressValueColor={COLORS.primary}
-            activeStrokeColor={COLORS.primary}
-            inActiveStrokeColor={'#9b59b6'}
-            inActiveStrokeOpacity={0.3}
-            inActiveStrokeWidth={20}
-            activeStrokeWidth={30}
-            // rotation={180}
-            // circleBackgroundColor=
-          />
-        </View> */}
+        {/* -------------- header Tabs ---------------- */}
         <View>
           <FlatList
             data={MainJSON.topHeaderButton}
@@ -48,8 +38,32 @@ export default function Dashboard() {
             }}
           />
         </View>
-        {/* <Bookings /> */}
-        <DiscoverCards />
+
+   <RevenueChart selectedMonth={selectedMonth} onChangeMonth={setSelectedMonth}/>
+
+        {/* <View>
+          <CircularProgress
+            value={30}
+            radius={120}
+            progressValueColor={COLORS.primary}
+            activeStrokeColor={COLORS.primary}
+            inActiveStrokeColor={'#9b59b6'}
+            inActiveStrokeOpacity={0.3}
+            inActiveStrokeWidth={20}
+            activeStrokeWidth={30}
+            // rotation={180}
+            // circleBackgroundColor=
+          />
+        </View> */}
+
+        {/* --------------bookings section ------------ */}
+        <Bookings
+          selectedMonth={selectedMonth}
+          onChangeMonth={setSelectedMonth}
+        />
+
+        {/* --------Discover Cards Section ------- */}
+        <DiscoverCards selectedMonth={selectedMonth} />
       </ScrollView>
     </SafeAreaView>
   );
@@ -61,7 +75,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   headerButtonList: {
-    marginVertical: 15,
+    marginTop:15,
   },
   headerButtonLabelView: {
     flex: 0,
@@ -71,7 +85,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     marginHorizontal: 10,
-    backgroundColor:COLORS.white
+    backgroundColor: COLORS.white,
   },
   headerButtonLabel: {
     color: COLORS.black,

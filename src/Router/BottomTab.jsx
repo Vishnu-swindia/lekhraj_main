@@ -10,7 +10,7 @@ import Dashboard from '../Screens/Dashboard';
 function TempScreen() {
   return (
     <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Settings!</Text>
+      <Text>Temp Screens!</Text>
     </View>
   );
 }

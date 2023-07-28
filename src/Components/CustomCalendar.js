@@ -5,51 +5,88 @@ import MIcon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../Resources/Resources';
 
 export default function CustomCalendar(props) {
-  const [currentMonth, setCurrentMonth] = useState(new Date().toLocaleString('default', { month: 'long' }));
-// const [currentDate, setCurrentDate] = useState(new Date().toLocaleString)
+  const selectedMonth = props.selectedMonth;
+  const [currentMonthName, setCurrentMonthName] = useState();
+  const [currentMonth, setCurrentMonth] = useState();
+  const [initialDate, setInitialDate] = useState();
 
-const renderArrow = (direction)  =>{
-  if(direction === 'left') {
-    return <MIcon name='arrow-back-ios' color={COLORS.primaryDark} size={25} style={{left:70}} />
-} else {
-  return <MIcon name='arrow-forward-ios' color={COLORS.primaryDark} size={25} style={{right:70}} />
-}
-}
-const marked = {
-  '2023-07-12': { marked: true },
-  // '2023-07-22': { selected: true }
-};
 
-const markedDates={
-  // '2023-07-16': {selected: true, marked: true, selectedColor: 'blue'},
-  [new Date().toISOString().slice(0, 10)]: { selected: true, selectedColor: 'blue' },
-  '2023-07-17': {marked: true},
-  '2023-07-18': {marked: true, dotColor: 'red', activeOpacity: 0},
-}
+ 
+  // let initialDate = new Date().toISOString().slice(0, 10)
+
+  useEffect(() => {
+    if (selectedMonth !== undefined) {
+      const date = new Date(2023, selectedMonth - 1, 2);
+      const monthName = date.toLocaleString('default', {month: 'long'});
+      setCurrentMonthName(monthName);
+      setInitialDate(date.toISOString().slice(0, 10));
+      setCurrentMonth(selectedMonth)
+    } else {
+      setCurrentMonthName(new Date().toLocaleString('default', {month: 'long'}));
+      setInitialDate(new Date().toISOString().slice(0, 10));
+    }
+  }, [selectedMonth]);
+
+  const renderArrow = direction => {
+    if (direction === 'left') {
+      return (
+        <MIcon
+          name="arrow-back-ios"
+          color={COLORS.primaryDark}
+          size={25}
+          style={{left: 70}}
+        />
+      );
+    } else {
+      return (
+        <MIcon
+          name="arrow-forward-ios"
+          color={COLORS.primaryDark}
+          size={25}
+          style={{right: 70}}
+        />
+      );
+    }
+  };
+
+  console.log("check -->", new Date())
+
+  const markedDates = {
+    [new Date().toISOString().slice(0, 10)]: {
+      selected: true,
+      selectedColor: 'blue',
+    },
+    '2023-07-17': {marked: true},
+    '2023-07-18': {marked: true, dotColor: 'red', activeOpacity: 0},
+  };
 
   return (
     <Calendar
       disableAllTouchEventsForDisabledDays={true}
       onMonthChange={month => {
-        console.log('month changed', month);
+      
         const date = new Date(0, month.month, 1);
-        const monthName = date.toLocaleString('default', { month: 'long' });
-      setCurrentMonth(monthName)
+        const monthName = date.toLocaleString('default', {month: 'long'});
+        setCurrentMonthName(monthName);
+      setCurrentMonth(month.month)
+      props.onChangeMonth(month.month)
+
       }}
+      initialDate={initialDate}
       renderArrow={renderArrow}
-      customHeaderTitle={<Text>{currentMonth}</Text>}
+      customHeaderTitle={<Text>{currentMonthName}</Text>}
       markedDates={markedDates}
-      {...props}
+      minDate={'2023-01-01'}
+      maxDate={'2023-12-31'}
     />
   );
 }
 
 const styles = StyleSheet.create({
-  headerMonthTitle:{
-    marginHorizontal:20,
-    color:COLORS.black,
-    fontSize:20,
-    fontWeight:"500"
-  }
+  headerMonthTitle: {
+    marginHorizontal: 20,
+    color: COLORS.black,
+    fontSize: 20,
+    fontWeight: '500',
+  },
 });
-
