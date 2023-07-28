@@ -1,4 +1,4 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+ the link for tha app --(https://drive.google.com/file/d/144CrtKaj0oPjutY48_QWnW1agdFcZMfj/view?usp=drivesdk)
 
 # Getting Started
 
